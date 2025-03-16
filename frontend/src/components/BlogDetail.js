@@ -13,7 +13,7 @@ const BlogDetail = () => {
     const fetchBlogDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/blogs/${id}`
+          `${process.env.REACT_APP_API_URI}blogs/${id}`
         );
         if (response.data.success) {
           setBlog(response.data.data);

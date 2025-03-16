@@ -13,7 +13,7 @@ export default class BestFlatList extends Component {
 
   componentDidMount() {
     axios
-      .get("http://localhost:5001/api/properties")
+      .get(`${process.env.REACT_APP_API_URI}properties`)
       .then((response) => {
         if (response.data.success) {
           // Filter only Commercial properties

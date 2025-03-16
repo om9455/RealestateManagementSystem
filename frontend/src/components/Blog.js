@@ -10,7 +10,9 @@ const Blog = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/api/blogs");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URI}blogs`
+        );
         if (response.data.success) {
           setBlogs(response.data.data);
         } else {

@@ -15,7 +15,7 @@ const FlatDetail = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/properties/${slug}`)
+    fetch(`${process.env.REACT_APP_API_URI}properties/${slug}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

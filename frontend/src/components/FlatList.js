@@ -17,7 +17,7 @@ const FlatList = () => {
     const fetchFlats = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5001/api/properties"
+          `${process.env.REACT_APP_API_URI}properties`
         );
         if (response.data.success) {
           // Filter only Residential properties

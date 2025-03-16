@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Dropdown, Form } from "react-bootstrap";
+import ContactList from "./ContactList";
+import PropertyPage from "./PropertyPage";
+import BlogPage from "./BlogPage";
+const API_URI = process.env.REACT_APP_API_URI;
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  
   useEffect(() => {
     const auth = localStorage.getItem("isLoggedIn");
     setIsLoggedIn(auth === "true");
@@ -17,7 +21,7 @@ export default function App() {
       alert("Invalid credentials");
     }
   };
-
+ 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     setIsLoggedIn(false);
@@ -84,7 +88,7 @@ function AdminPanel({ onLogout }) {
   return (
     <div className="d-flex">
       {/* Sidebar */}
-      <div className="bg-dark text-white vh-100 p-3" style={{ width: "250px" }}>
+      <div className="bg-dark text-white vh-110 p-3" style={{ width: "250px" }}>
         <h4 className="mb-4">Admin Panel</h4>
         <ul className="nav flex-column">
           <li className="nav-item">
@@ -125,8 +129,8 @@ function AdminPanel({ onLogout }) {
 
       {/* Content Area */}
       <div className="flex-grow-1 p-4">
-        {activePage === "addProperty" && <AddPropertyForm />}
-        {activePage === "addBlog" && <AddBlogForm />}
+        {activePage === "addProperty" && <PropertyPage />}
+        {activePage === "addBlog" && <BlogPage />}
         {activePage === "contactList" && <ContactList />}
       </div>
     </div>
@@ -134,163 +138,272 @@ function AdminPanel({ onLogout }) {
 }
 
 
-function AddPropertyForm() {
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const amenitiesList = ["Gym", "Swimming Pool", "Parking", "WiFi", "Security"];
 
-  const toggleAmenity = (amenity) => {
-    setSelectedAmenities((prev) =>
-      prev.includes(amenity)
-        ? prev.filter((item) => item !== amenity)
-        : [...prev, amenity]
-    );
-  };
 
-  return (
-    <div>
-      <h3>Add Property</h3>
-      <form>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter title"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Type</label>
-          <select className="form-select">
-            <option value="Residential">Residential</option>
-            <option value="Commercial">Commercial</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Price</label>
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Enter price"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Location</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter location"
-          />
-        </div>
 
-        {/* Multi-Select Dropdown for Amenities */}
-        <div className="mb-3">
-          <label className="form-label">Amenities</label>
-          <Dropdown>
-            <Dropdown.Toggle variant="secondary" className="w-100">
-              {selectedAmenities.length > 0
-                ? selectedAmenities.join(", ")
-                : "Select Amenities"}
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="w-100 p-2">
-              {amenitiesList.map((amenity) => (
-                <Form.Check
-                  key={amenity}
-                  type="checkbox"
-                  label={amenity}
-                  checked={selectedAmenities.includes(amenity)}
-                  onChange={() => toggleAmenity(amenity)}
-                />
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+// function AddPropertyForm() {
+//   const [form, setForm] = useState({
+//     title: "",
+//     type: "Residential",
+//     description: "",
+//     price: "",
+//     location: "",
+//     amenities: [],
+//   });
 
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
-    </div>
-  );
-}
+//   const amenitiesList = ["Gym", "Swimming Pool", "Parking", "WiFi", "Security"];
 
-function AddBlogForm() {
-  return (
-    <div>
-      <h3>Add Blog</h3>
-      <form>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter blog title"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Content</label>
-          <textarea
-            className="form-control"
-            rows="5"
-            placeholder="Enter blog content"
-          ></textarea>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Author</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter author name"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
-    </div>
-  );
-}
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setForm({ ...form, [name]: value });
+//   };
 
-function ContactList() {
-  const contacts = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      message: "Interested in a property.",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      message: "Would like to schedule a visit.",
-    },
-  ];
+//   const toggleAmenity = (amenity) => {
+//     setForm((prev) => ({
+//       ...prev,
+//       amenities: prev.amenities.includes(amenity)
+//         ? prev.amenities.filter((item) => item !== amenity)
+//         : [...prev.amenities, amenity],
+//     }));
+//   };
 
-  return (
-    <div>
-      <h3>Contact List</h3>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Message</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact) => (
-            <tr key={contact.id}>
-              <td>{contact.name}</td>
-              <td>{contact.email}</td>
-              <td>{contact.message}</td>
-              <td>
-                <button className="btn btn-danger btn-sm">Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     const propertyData = {
+//       ...form,
+//       price: Number(form.price), // Convert price to number
+//     };
+
+//     console.log("Form Data:", propertyData); // Debug the payload
+
+//     try {
+//       const response = await fetch(API_URI + "properties", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(propertyData),
+//       });
+
+//       if (response.ok) {
+//         alert("Property added successfully!");
+//         setForm({
+//           title: "",
+//           type: "Residential",
+//           description: "",
+//           price: "",
+//           location: "",
+//           amenities: [],
+//         });
+//       } else {
+//         alert("Failed to add property. Please try again.");
+//       }
+//     } catch (error) {
+//       console.error("Error:", error);
+//       alert("An error occurred. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h3>Add Property</h3>
+//       <form onSubmit={handleSubmit}>
+//         {/* Title */}
+//         <div className="mb-3">
+//           <label className="form-label">Title</label>
+//           <input
+//             type="text"
+//             name="title"
+//             value={form.title}
+//             onChange={handleChange}
+//             className="form-control"
+//             placeholder="Enter title"
+//             required
+//           />
+//         </div>
+
+//         {/* Type */}
+//         <div className="mb-3">
+//           <label className="form-label">Type</label>
+//           <select
+//             name="type"
+//             value={form.type}
+//             onChange={handleChange}
+//             className="form-select"
+//             required
+//           >
+//             <option value="Residential">Residential</option>
+//             <option value="Commercial">Commercial</option>
+//           </select>
+//         </div>
+
+//         {/* Description */}
+//         <div className="mb-3">
+//           <label className="form-label">Description</label>
+//           <textarea
+//             name="description"
+//             value={form.description}
+//             onChange={handleChange}
+//             className="form-control"
+//             rows="4"
+//             placeholder="Enter description"
+//             required
+//           />
+//         </div>
+
+//         {/* Price */}
+//         <div className="mb-3">
+//           <label className="form-label">Price</label>
+//           <input
+//             type="number"
+//             name="price"
+//             value={form.price}
+//             onChange={handleChange}
+//             className="form-control"
+//             placeholder="Enter price"
+//             required
+//           />
+//         </div>
+
+//         {/* Location */}
+//         <div className="mb-3">
+//           <label className="form-label">Location</label>
+//           <input
+//             type="text"
+//             name="location"
+//             value={form.location}
+//             onChange={handleChange}
+//             className="form-control"
+//             placeholder="Enter location"
+//             required
+//           />
+//         </div>
+
+//         {/* Amenities */}
+//         <div className="mb-3">
+//           <label className="form-label">Amenities</label>
+//           <Dropdown>
+//             <Dropdown.Toggle variant="secondary" className="w-100">
+//               {form.amenities.length > 0
+//                 ? form.amenities.join(", ")
+//                 : "Select Amenities"}
+//             </Dropdown.Toggle>
+//             <Dropdown.Menu className="w-100 p-2">
+//               {amenitiesList.map((amenity) => (
+//                 <Form.Check
+//                   key={amenity}
+//                   type="checkbox"
+//                   label={amenity}
+//                   checked={form.amenities.includes(amenity)}
+//                   onChange={() => toggleAmenity(amenity)}
+//                 />
+//               ))}
+//             </Dropdown.Menu>
+//           </Dropdown>
+//         </div>
+
+//         {/* Submit Button */}
+//         <button type="submit" className="btn btn-primary">
+//           Submit
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+
+// function AddBlogForm() {
+//   const [form, setForm] = useState({
+//     title: "",
+//     content: "",
+//     author: "",
+//   });
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setForm({ ...form, [name]: value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const response = await fetch(API_URI+"blogs", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(form),
+//       });
+
+//       if (response.ok) {
+//         alert("Blog added successfully!");
+//         setForm({
+//           title: "",
+//           content: "",
+//           author: "",
+//         });
+//       } else {
+//         alert("Failed to add blog. Please try again.");
+//       }
+//     } catch (error) {
+//       console.error("Error:", error);
+//       alert("An error occurred. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h3>Add Blog</h3>
+//       <form onSubmit={handleSubmit}>
+//         {/* Title */}
+//         <div className="mb-3">
+//           <label className="form-label">Title</label>
+//           <input
+//             type="text"
+//             name="title"
+//             value={form.title}
+//             onChange={handleChange}
+//             className="form-control"
+//             placeholder="Enter blog title"
+//             required
+//           />
+//         </div>
+
+//         {/* Content */}
+//         <div className="mb-3">
+//           <label className="form-label">Content</label>
+//           <textarea
+//             name="content"
+//             value={form.content}
+//             onChange={handleChange}
+//             className="form-control"
+//             rows="5"
+//             placeholder="Enter blog content"
+//             required
+//           ></textarea>
+//         </div>
+
+//         {/* Author */}
+//         <div className="mb-3">
+//           <label className="form-label">Author</label>
+//           <input
+//             type="text"
+//             name="author"
+//             value={form.author}
+//             onChange={handleChange}
+//             className="form-control"
+//             placeholder="Enter author name"
+//             required
+//           />
+//         </div>
+
+//         {/* Submit Button */}
+//         <button type="submit" className="btn btn-primary">
+//           Submit
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+

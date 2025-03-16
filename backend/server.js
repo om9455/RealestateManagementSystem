@@ -8,7 +8,7 @@ const createRoutes = require("./routes/crudRoutes");
 const Property = require("./models/Property");
 const Blog = require("./models/Blog");
 const Contact = require("./models/Contact");
-
+const cors = require("cors");
 // Load environment variables
 dotenv.config();
 connectDB();
@@ -16,8 +16,8 @@ connectDB();
 // Init App
 const app = express();
 app.use(express.json());
-
-// Routes
+app.use(cors());
+// Routes 
 app.use("/api/properties", createRoutes(Property, "Property"));
 app.use("/api/blogs", createRoutes(Blog, "Blog"));
 app.use("/api/contacts", createRoutes(Contact, "Contact"));

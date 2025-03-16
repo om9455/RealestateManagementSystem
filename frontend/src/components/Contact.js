@@ -23,7 +23,7 @@ const Contact = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/contacts",
+        `${process.env.REACT_APP_API_URI}contacts`,
         formData,
         {
           headers: { "Content-Type": "application/json" },
