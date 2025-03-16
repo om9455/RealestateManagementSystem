@@ -1,8 +1,82 @@
-import React, { useState } from "react";
-import { Dropdown, Form, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Dropdown, Form, Button } from "react-bootstrap";
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-export default function AdminPanel() {
+  useEffect(() => {
+    const auth = localStorage.getItem("isLoggedIn");
+    setIsLoggedIn(auth === "true");
+  }, []);
+
+  const handleLogin = (username, password) => {
+    if (username === "admin" && password === "password") {
+      localStorage.setItem("isLoggedIn", "true");
+      setIsLoggedIn(true);
+    } else {
+      alert("Invalid credentials");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+  };
+
+  return isLoggedIn ? (
+    <AdminPanel onLogout={handleLogout} />
+  ) : (
+    <AdminLogin onLogin={handleLogin} />
+  );
+}
+
+function AdminLogin({ onLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onLogin(username, password);
+  };
+
+  return (
+    <div className="d-flex vh-100 justify-content-center align-items-center bg-light">
+      <div
+        className="card p-4 shadow-lg rounded"
+        style={{ width: "350px", background: "white" }}
+      >
+        <h3 className="mb-4 text-center">Admin Login</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              className="form-control"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary w-100">
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function AdminPanel({ onLogout }) {
   const [activePage, setActivePage] = useState("addProperty");
 
   const handlePageChange = (page) => setActivePage(page);
@@ -15,7 +89,7 @@ export default function AdminPanel() {
         <ul className="nav flex-column">
           <li className="nav-item">
             <button
-              className={`btn text-white text-start w-100 ${
+              className={`btn btn-link text-white text-start w-100 text-decoration-none ${
                 activePage === "addProperty" ? "fw-bold" : ""
               }`}
               onClick={() => handlePageChange("addProperty")}
@@ -25,7 +99,7 @@ export default function AdminPanel() {
           </li>
           <li className="nav-item">
             <button
-              className={`btn text-white text-start w-100 ${
+              className={`btn btn-link text-white text-start w-100 text-decoration-none ${
                 activePage === "addBlog" ? "fw-bold" : ""
               }`}
               onClick={() => handlePageChange("addBlog")}
@@ -35,7 +109,7 @@ export default function AdminPanel() {
           </li>
           <li className="nav-item">
             <button
-              className={`btn text-white text-start w-100 ${
+              className={`btn btn-link text-white text-start w-100 text-decoration-none ${
                 activePage === "contactList" ? "fw-bold" : ""
               }`}
               onClick={() => handlePageChange("contactList")}
@@ -44,6 +118,9 @@ export default function AdminPanel() {
             </button>
           </li>
         </ul>
+        <button className="btn btn-danger mt-4" onClick={onLogout}>
+          Logout
+        </button>
       </div>
 
       {/* Content Area */}
@@ -55,6 +132,7 @@ export default function AdminPanel() {
     </div>
   );
 }
+
 
 function AddPropertyForm() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
