@@ -1,37 +1,64 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "./Sidebar";
-import blogData from "./BlogData";
 
 const BlogDetail = () => {
-    const { id } = useParams();
-    const blog = blogData.find(b => b.id === id);
+  const { id } = useParams();
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    if (!blog) {
-        return <h2>Blog not found</h2>;
-    }
+  useEffect(() => {
+    const fetchBlogDetail = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5001/api/blogs/${id}`
+        );
+        if (response.data.success) {
+          setBlog(response.data.data);
+        } else {
+          setError("Blog not found");
+        }
+      } catch (err) {
+        setError("Error fetching blog details");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <div className="container mt-4 mb-4">
-            <div className="row">
-                <div className="col-lg-8">
-                    <div className="blog-detail">
-                        <img className="w-100" src={blog.image} alt={blog.title} />
-                        <span className="blog-detail-category">{blog.category}</span>
-                        <h1 className="blog-detail-title">{blog.title}</h1>
-                        <span className="blog-detail-date">{blog.date}</span>
+    fetchBlogDetail();
+  }, [id]);
 
-                        {blog.content.map((section, index) => (
-                            <div key={index}>
-                                <h2 className="blog-detail-alttitle">{section.subtitle}</h2>
-                                <p className="blog-detail-content">{section.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <Sidebar />
-            </div>
+  if (loading) return <p>Loading...</p>;
+  if (error) return <h2>{error}</h2>;
+
+  return (
+    <div className="container mt-4 mb-4">
+      <div className="row">
+        <div className="col-lg-8">
+          <div className="blog-detail">
+            {/* Static Image */}
+            <img
+              className="w-100"
+              src="/img/product1.jpeg"
+              alt={blog.title}
+            />
+
+            {/* Blog Title & Meta Info */}
+            <h1 className="blog-detail-title mt-3">{blog.title}</h1>
+            <p className="blog-detail-author">
+              <strong>Author:</strong> {blog.author}
+            </p>
+
+            {/* Blog Content */}
+            <p className="blog-detail-content">{blog.content}</p>
+          </div>
         </div>
-    );
+        <Sidebar />
+      </div>
+    </div>
+  );
 };
 
 export default BlogDetail;
